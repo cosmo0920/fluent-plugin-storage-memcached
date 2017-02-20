@@ -48,7 +48,7 @@ module Fluent
                      end
 
         options = {
-          thread_safe: true,
+          threadsafe: true,
           namespace: @namespace,
           compress: @compress,
           serializer: @serializer,
