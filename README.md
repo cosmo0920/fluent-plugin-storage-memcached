@@ -20,19 +20,28 @@ Or install it yourself as:
 
     $ gem install fluent-plugin-storage-memcached
 
-## Usage
+## Configuration
 
-TODO: Write usage instructions here
+```aconf
+<storage>
+  @type memcached
 
-## Development
-
-After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+  path my_key # or conf.arg will be used as redis key
+  host localhost     # localhost is default
+  port 11211         # 11211 is default
+  namespace app_v1   # app_v1 is default
+  compress true      # true is default
+  # If sasl enabled memcached server is configured, please specify them.
+  # username fluenter
+  # password hogefuga
+  serializer yajl    # yajl is default
+  expires_in 0       # 0 is default
+</storage>
+```
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/fluent-plugin-storage-memcached.
+Bug reports and pull requests are welcome on GitHub at https://github.com/cosmo0920/fluent-plugin-storage-memcached.
 
 
 ## License
