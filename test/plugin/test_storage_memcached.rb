@@ -61,9 +61,18 @@ class MemcachedStorageTest < Test::Unit::TestCase
   end
 
   sub_test_case 'configured with path key' do
-    test 'works as storage which stores data into redis' do
+    data(
+      "yajl" => :yajl,
+      "json" => :json,
+      "marshal" => :marshal,
+    )
+    test 'configured with several serializers' do |data|
+      serializer = data
       storage_path = @path
-      conf = config_element('ROOT', '', {}, [config_element('storage', '', {'path' => storage_path})])
+      conf = config_element('ROOT', '', {}, [config_element('storage', '', {
+                                                              'path' => storage_path,
+                                                              'serializer' => serializer,
+                                                            })])
       @d.configure(conf)
       @d.start
       @p = @d.storage_create()
