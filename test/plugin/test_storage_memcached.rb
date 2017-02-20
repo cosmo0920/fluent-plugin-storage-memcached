@@ -13,6 +13,14 @@ class MemcachedStorageTest < Test::Unit::TestCase
     end
   end
 
+  def host
+    "localhost"
+  end
+
+  def port
+    11211
+  end
+
   def setup_memcached
     @store = {}
     options = {
@@ -22,8 +30,6 @@ class MemcachedStorageTest < Test::Unit::TestCase
       serializer: JSON,
       expires_on: 0,
     }
-    host = "localhost"
-    port = 11211
 
     @memcached = Dalli::Client.new("#{host}:#{port}", options)
   end
@@ -57,6 +63,30 @@ class MemcachedStorageTest < Test::Unit::TestCase
       assert_raise(Fluent::ConfigError) do
         @d.configure(conf)
       end
+    end
+  end
+
+  sub_test_case '#configure' do
+    test "default" do
+      storage_path = @path
+      conf = config_element('ROOT', '', {}, [config_element('storage', '', {
+                                                              'path' => storage_path,
+                                                            }
+                                                           )])
+      @d.configure(conf)
+      @d.start
+      @p = @d.storage_create()
+      assert_true(@p.persistent)
+
+      assert_equal('my_store_key', @p.path)
+      assert_equal(host, @p.host)
+      assert_equal(port, @p.port)
+      assert_equal("app_v1", @p.namespace)
+      assert_true(@p.compress)
+      assert_nil(@p.username)
+      assert_nil(@p.password)
+      assert_equal(Yajl, @p.serializer)
+      assert_equal(0, @p.expires_in)
     end
   end
 
