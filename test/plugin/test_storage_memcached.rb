@@ -122,7 +122,7 @@ class MemcachedStorageTest < Test::Unit::TestCase
       end
       assert_equal '2', @p.get('key1')
 
-      @p.save # stores all data into redis
+      @p.save # stores all data into memcached
 
       assert @p.load
 
@@ -160,7 +160,7 @@ class MemcachedStorageTest < Test::Unit::TestCase
       @p.put('key1', '1')
       assert_equal '1', @p.get('key1')
 
-      @p.save # stores all data into redis
+      @p.save # stores all data into memcached
 
       assert_equal({"key1"=>"1"}, @p.load)
     end

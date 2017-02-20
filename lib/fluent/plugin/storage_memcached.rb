@@ -65,7 +65,7 @@ module Fluent
             data = @serializer.load(object)
             raise Fluent::ConfigError, "Invalid contents (not object) in plugin memcached storage: '#{@path}'" unless data.is_a?(Hash) unless data.is_a?(Hash)
           rescue => e
-            log.error "failed to read data from plugin redis storage", path: @path, error: e
+            log.error "failed to read data from plugin memcached storage", path: @path, error: e
             raise Fluent::ConfigError, "Unexpected error: failed to read data from plugin memcached storage: '#{@path}'"
           end
         end

@@ -26,7 +26,7 @@ Or install it yourself as:
 <storage>
   @type memcached
 
-  path my_key # or conf.arg will be used as redis key
+  path my_key # or conf.arg will be used as memcached key
   host localhost     # localhost is default
   port 11211         # 11211 is default
   namespace app_v1   # app_v1 is default
