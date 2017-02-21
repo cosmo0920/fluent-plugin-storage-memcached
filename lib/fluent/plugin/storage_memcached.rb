@@ -8,14 +8,14 @@ module Fluent
       Fluent::Plugin.register_storage('memcached', self)
 
       config_param :path, :string, default: nil
-      config_param :host, :array, default: 'localhost'
+      config_param :host, :string, default: 'localhost'
       config_param :port, :integer, default: 11211
       config_param :namespace, :string, default: 'app_v1'
       config_param :compress, :bool, default: true
       config_param :username, :string, default: nil
       config_param :password, :string, default: nil, secret: true
       config_param :serializer, :enum, list: [:yajl, :json, :marshal], default: :yajl
-      config_param :expires_in, :integer, default: 0
+      config_param :expires_in, :time, default: 0
       # Set persistent true by default
       config_set_default :persistent, true
 
