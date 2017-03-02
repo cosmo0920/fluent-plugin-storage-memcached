@@ -8,14 +8,14 @@ module Fluent
       Fluent::Plugin.register_storage('memcached', self)
 
       config_param :path, :string, default: nil
-      config_param :host, :string, default: 'localhost'
-      config_param :port, :integer, default: 11211
+      config_param :hosts, :array, default: ['localhost:11211']
       config_param :namespace, :string, default: 'app_v1'
       config_param :compress, :bool, default: true
       config_param :username, :string, default: nil
       config_param :password, :string, default: nil, secret: true
       config_param :serializer, :enum, list: [:yajl, :json, :marshal], default: :yajl
       config_param :expires_in, :time, default: 0
+      config_param :failover, :bool, default: true
       # Set persistent true by default
       config_set_default :persistent, true
 
@@ -53,11 +53,12 @@ module Fluent
           compress: @compress,
           serializer: @serializer,
           expires_in: @expires_in,
+          failover: @failover
         }
         options[:username] = @username if @username
         options[:password] = @password if @password
 
-        @memcached = Dalli::Client.new("#{@host}:#{@port}", options)
+        @memcached = Dalli::Client.new(@hosts, options)
 
         object = @memcached.get(@path)
         if object

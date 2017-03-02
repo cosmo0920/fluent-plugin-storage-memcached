@@ -27,8 +27,7 @@ Or install it yourself as:
   @type memcached
 
   path my_key # or conf.arg will be used as memcached key
-  host localhost     # localhost is default
-  port 11211         # 11211 is default
+  hosts ['localhost:11211'] # ['localhost:11211'] is default
   namespace app_v1   # app_v1 is default
   compress true      # true is default
   # If sasl enabled memcached server is configured, please specify them.

@@ -13,12 +13,8 @@ class MemcachedStorageTest < Test::Unit::TestCase
     end
   end
 
-  def host
-    "localhost"
-  end
-
-  def port
-    11211
+  def hosts
+    ["localhost:11211"]
   end
 
   def setup_memcached
@@ -31,7 +27,7 @@ class MemcachedStorageTest < Test::Unit::TestCase
       expires_on: 0,
     }
 
-    @memcached = Dalli::Client.new("#{host}:#{port}", options)
+    @memcached = Dalli::Client.new(hosts, options)
   end
 
   def teardown_memcached
@@ -79,14 +75,14 @@ class MemcachedStorageTest < Test::Unit::TestCase
       assert_true(@p.persistent)
 
       assert_equal('my_store_key', @p.path)
-      assert_equal(host, @p.host)
-      assert_equal(port, @p.port)
+      assert_equal(['localhost:11211'], @p.hosts)
       assert_equal("app_v1", @p.namespace)
       assert_true(@p.compress)
       assert_nil(@p.username)
       assert_nil(@p.password)
       assert_equal(Yajl, @p.serializer)
       assert_equal(0, @p.expires_in)
+      assert_true(@p.failover)
     end
   end
 
@@ -142,6 +138,35 @@ class MemcachedStorageTest < Test::Unit::TestCase
 
       assert_equal '2', @p.get('key1')
       assert_equal 4, @p.get('key2')
+    end
+  end
+
+  sub_test_case "failover" do
+    test "noexistent & default" do
+      storage_path = @path
+      conf = config_element('ROOT', '', {}, [config_element('storage', '', {
+                                                              'path' => storage_path,
+                                                              'hosts' => ['noexistent.local:11211',
+                                                                          'localhost:11211'],
+                                                            }
+                                                           )])
+      @d.configure(conf)
+      @d.start
+      @p = @d.storage_create()
+      assert_true(@p.persistent)
+
+      assert_equal @path, @p.path
+      assert @p.store.empty?
+
+      @p.put('key1', '1')
+      assert_equal '1', @p.get('key1')
+
+      @p.save # stores all data into memcached
+      result = @memcached.stats
+      assert_instance_of NilClass, result["noexistent.local:11211"]
+      assert_instance_of Hash, result["localhost:11211"]
+
+      assert_equal({"key1"=>"1"}, @p.load)
     end
   end
 
