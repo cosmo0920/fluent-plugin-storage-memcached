@@ -52,7 +52,7 @@ module Fluent
           namespace: @namespace,
           compress: @compress,
           serializer: @serializer,
-          expires_on: @expires_in,
+          expires_in: @expires_in,
         }
         options[:username] = @username if @username
         options[:password] = @password if @password
