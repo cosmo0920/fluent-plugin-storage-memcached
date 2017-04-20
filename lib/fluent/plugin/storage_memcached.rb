@@ -76,10 +76,6 @@ module Fluent
         true
       end
 
-      def persistent_always?
-        true
-      end
-
       def load
         begin
           json_string = @memcached.get(@path)
